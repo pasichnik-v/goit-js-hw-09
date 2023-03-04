@@ -9,51 +9,52 @@
 //  зі значеннями однойменних параметрів.
 // Використовуй початковий код функції для вибору того, що потрібно зробити з промісом - 
 // виконати або відхилити.
+
 // Імпортуємо бібліотеку
 import Notiflix from 'notiflix';
 
 // //  Отримуємо форму
 const form = document.querySelector('.form');
 
-// //  Створюємо слухача події
+// Доповнюємо функцію promis і setTimeOut. Дописуємо умову then і catch (бібліотека Notiflix.Notify.success && Notiflix.Notify.failure)
+  function createPromise(position, delay) {
+    const promise = new Promise((resolve, reject) => {
+      const shouldResolve = Math.random() > 0.3;
+      setTimeout(() => {
+        if (shouldResolve) {
+          // Fulfill
+          resolve({ position, delay });
+        } else {
+          // Reject
+          reject({ position, delay });
+        }
+      }, delay);
+    });
+    promise
+    .then(({ position, delay }) => {
+      // console.log(`✅ Fulfilled Promise ${position} in ${delay}ms`);
+      Notiflix.Notify.success(
+          `Fulfilled Promise ${position} in ${delay}ms`
+        );
+  })
+  .catch(({ position, delay }) => {
+    // console.log(`❌ Rejected promise ${position} in ${delay}ms`);
+    Notiflix.Notify.failure(
+          `Rejected promise ${position} in ${delay}ms`
+        );
+  });
+}
 
-form.addEventListener("submit", (event) => {
+// //  Створюємо слухача події + в слухачі застосовуємо цикл
+form.addEventListener('submit', event => {
   event.preventDefault();
-// створюємо const
+  
   const delay = Number(event.target.delay.value);
   const step = Number(event.target.step.value);
   const amount = Number(event.target.amount.value);
-// застосовуємо цикл
+  
   for (let i = 0; i < amount; i++) {
     createPromise(i + 1, delay + i * step)
-    }
+  }
 });
 
-// Доповнюємо функцію promis і setTimeOut
-function createPromise(position, delay) {
-
-const promise = new Promise((resolve, reject) => {
-    const shouldResolve = Math.random() > 0.3;
-    setTimeout(() => {
-      if (shouldResolve) {
-        resolve({ position, delay });
-      } else {
-        reject({ position, delay })
-      }
-    }, delay);
-})
-  // Дописуємо умову then і catch (бібліотека Notiflix.Notify.success && Notiflix.Notify.failure)
-  .then(({ position, delay }) => {
-        console.log(`Promise ${position} resolved in ${delay}ms`)
-        Notiflix.Notify.success(
-          `Promise ${position} resolved in ${delay}ms`
-        );
-      })
-      .catch(({ position, delay }) => {
-        console.log(`Promise ${position} rejected in ${delay}ms`)
-        Notiflix.Notify.failure(
-          `Promise ${position} rejected in ${delay}ms`
-        );
-      });
-  
-}
